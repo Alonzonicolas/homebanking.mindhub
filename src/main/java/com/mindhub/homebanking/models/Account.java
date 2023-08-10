@@ -20,9 +20,9 @@ public class Account {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="client_id")
-    private Client owner;
+    private Client client;
 
-    @OneToMany(mappedBy="bankAccount", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy="account", fetch=FetchType.EAGER)
     private Set<Transaction> transactions = new HashSet<>();
 
     public Account(){
@@ -62,12 +62,12 @@ public class Account {
         this.balance = balance;
     }
 
-    public Client getOwner() {
-        return owner;
+    public Client getClient() {
+        return client;
     }
 
-    public void setOwner(Client owner) {
-        this.owner = owner;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Set<Transaction> getTransactions() {
@@ -75,7 +75,7 @@ public class Account {
     }
 
     public void addTransaction(Transaction transaction) {
-        transaction.setBankAccount(this);
+        transaction.setAccount(this);
         transactions.add(transaction);
     }
 }
