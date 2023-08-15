@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication
@@ -18,7 +19,7 @@ public class HomebankingApplication {
 	}
 
 	@Bean
-	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository) {
+	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
 			Client client1 = clientRepository.save(new Client("Melba", "Morel", "melba@mindhub.com"));
 			Client client2 = clientRepository.save(new Client("Jack", "Bauer", "jack@mindhub.com"));
@@ -82,6 +83,16 @@ public class HomebankingApplication {
 			loan3.addClientLoan(clientLoan4);
 			client2.addClientLoan(clientLoan4);
 			clientLoanRepository.save(clientLoan4);
+
+			Card card1 = new Card(client1.getFirstName()+" "+client1.getLastName(), CardType.DEBIT, CardColor.GOLD, "1341-5325-2523-2311", 321, LocalDateTime.now().plusYears(5), LocalDateTime.now());
+			client1.addCard(card1);
+			cardRepository.save(card1);
+			Card card2 = new Card(client1.getFirstName()+" "+client1.getLastName(), CardType.CREDIT, CardColor.TITANIUM, "3536-7965-0650-4503", 755, LocalDateTime.now().plusYears(5), LocalDateTime.now());
+			client1.addCard(card2);
+			cardRepository.save(card2);
+			Card card3 = new Card(client2.getFirstName()+" "+client2.getLastName(), CardType.CREDIT, CardColor.SILVER, "3145-6215-1212-0325", 332, LocalDateTime.now().plusYears(6), LocalDateTime.now());
+			client2.addCard(card3);
+			cardRepository.save(card3);
 		};
 	}
 }
