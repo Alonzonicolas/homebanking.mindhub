@@ -2,10 +2,12 @@ package com.mindhub.homebanking;
 
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.repositories.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,15 +20,18 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Bean
 	public CommandLineRunner initData(ClientRepository clientRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, LoanRepository loanRepository, ClientLoanRepository clientLoanRepository, CardRepository cardRepository) {
 		return (args) -> {
-			Client client1 = clientRepository.save(new Client("Melba", "Morel", "melba@mindhub.com"));
-			Client client2 = clientRepository.save(new Client("Jack", "Bauer", "jack@mindhub.com"));
-			Client client3 = clientRepository.save(new Client("Chloe", "O'Brian", "chloe@mindhub.com"));
-			Client client4 = clientRepository.save(new Client("Kim", "Bauer", "kim@mindhub.com"));
-			Client client5 = clientRepository.save(new Client("David", "Palmer", "david@mindhub.com"));
-			Client client6 = clientRepository.save(new Client("Michelle", "Dessler", "michelle@mindhub.com"));
+			Client client1 = clientRepository.save(new Client("Melba", "Morel", "melba@mindhub.com", passwordEncoder.encode("123")));
+			Client client2 = clientRepository.save(new Client("Jack", "Bauer", "jack@mindhub.com", passwordEncoder.encode("123")));
+			Client client3 = clientRepository.save(new Client("Chloe", "O'Brian", "chloe@mindhub.com", passwordEncoder.encode("123")));
+			Client client4 = clientRepository.save(new Client("Kim", "Bauer", "kim@mindhub.com", passwordEncoder.encode("123")));
+			Client client5 = clientRepository.save(new Client("David", "Palmer", "david@mindhub.com", passwordEncoder.encode("123")));
+			Client client6 = clientRepository.save(new Client("Michelle", "Dessler", "michelle@mindhub.com", passwordEncoder.encode("123")));
 
 			Account account1 = new Account("VIN001", LocalDate.now() , 5000);
 			client1.addAccount(account1);
