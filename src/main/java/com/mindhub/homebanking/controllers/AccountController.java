@@ -2,8 +2,13 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
+import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.repositories.AccountRepository;
+import com.mindhub.homebanking.repositories.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,10 +36,23 @@ public class AccountController {
         return convertedList;
     }
 
+    @Autowired
+    private ClientRepository clientRepository;
     @GetMapping("/accounts/{id}")
-    public AccountDTO getAccountById(@PathVariable Long id){
-        Account account =  accountRepository.findById(id).orElse(null);
-        return new AccountDTO(account);
+    public ResponseEntity<Object> getAccountById(@PathVariable Long id, Authentication authentication){
+        Client client = clientRepository.findByEmail((authentication.getName()));
+        Account account = accountRepository.findById(id).orElse(null);
+        if (account == null){
+            return new ResponseEntity<>("Account not found", HttpStatus.BAD_GATEWAY);
+        }
+
+        if (account.getClient().equals(client)){
+            AccountDTO accountDTO = new AccountDTO(account);
+            return new ResponseEntity<>(accountDTO, HttpStatus.ACCEPTED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
 }

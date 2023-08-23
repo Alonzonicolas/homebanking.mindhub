@@ -32,6 +32,7 @@ public class HomebankingApplication {
 			Client client4 = clientRepository.save(new Client("Kim", "Bauer", "kim@mindhub.com", passwordEncoder.encode("123")));
 			Client client5 = clientRepository.save(new Client("David", "Palmer", "david@mindhub.com", passwordEncoder.encode("123")));
 			Client client6 = clientRepository.save(new Client("Michelle", "Dessler", "michelle@mindhub.com", passwordEncoder.encode("123")));
+			Client client7 = clientRepository.save(new Client("admin", "admin", "admin@admin.com", passwordEncoder.encode("123")));
 
 			Account account1 = new Account("VIN001", LocalDate.now() , 5000);
 			client1.addAccount(account1);
@@ -55,12 +56,15 @@ public class HomebankingApplication {
 			Transaction transaction3 = new Transaction(TransactionType.DEBIT, -540, "Debt", LocalDate.now());
 			account2.addTransaction(transaction3);
 			transactionRepository.save(transaction3);
-			Transaction transaction4 = new Transaction(TransactionType.CREDIT, 1360, "", LocalDate.now());
+			Transaction transaction4 = new Transaction(TransactionType.CREDIT, 1360, "Sales", LocalDate.now());
 			account2.addTransaction(transaction4);
 			transactionRepository.save(transaction4);
 			Transaction transaction5 = new Transaction(TransactionType.DEBIT, -4700, "Store", LocalDate.now());
 			account2.addTransaction(transaction5);
 			transactionRepository.save(transaction5);
+			Transaction transaction6 = new Transaction(TransactionType.DEBIT, -1500, "Store", LocalDate.now());
+			account3.addTransaction(transaction6);
+			transactionRepository.save(transaction6);
 
 			Loan loan1 = new Loan("Hipotecario", 500000, List.of(12, 24, 36, 48, 60));
 			loanRepository.save(loan1);
