@@ -34,16 +34,16 @@ public class HomebankingApplication {
 			Client client6 = clientRepository.save(new Client("Michelle", "Dessler", "michelle@mindhub.com", passwordEncoder.encode("123")));
 			Client client7 = clientRepository.save(new Client("admin", "admin", "admin@admin.com", passwordEncoder.encode("123")));
 
-			Account account1 = new Account("VIN001", LocalDate.now() , 5000);
+			Account account1 = new Account("VIN-00141421", LocalDateTime.now() , 5000);
 			client1.addAccount(account1);
 			accountRepository.save(account1);
-			Account account2 = new Account("VIN002", LocalDate.now().plusDays(1) , 7500);
+			Account account2 = new Account("VIN-31264002", LocalDateTime.now().plusDays(1) , 7500);
 			client1.addAccount(account2);
 			accountRepository.save(account2);
-			Account account3 = new Account("VIN043", LocalDate.now(), 3400);
+			Account account3 = new Account("VIN-45724043", LocalDateTime.now(), 3400);
 			client2.addAccount(account3);
 			accountRepository.save(account3);
-			Account account4 = new Account("VIN042", LocalDate.now() , 2200);
+			Account account4 = new Account("VIN-62085042", LocalDateTime.now() , 2200);
 			client3.addAccount(account4);
 			accountRepository.save(account4);
 
