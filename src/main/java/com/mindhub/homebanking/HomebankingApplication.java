@@ -47,22 +47,22 @@ public class HomebankingApplication {
 			client3.addAccount(account4);
 			accountRepository.save(account4);
 
-			Transaction transaction1 = new Transaction(TransactionType.CREDIT, 4000, "Sales", LocalDate.now());
+			Transaction transaction1 = new Transaction(TransactionType.CREDIT, 4000, "Sales", LocalDateTime.now());
 			account1.addTransaction(transaction1);
 			transactionRepository.save(transaction1);
-			Transaction transaction2 = new Transaction(TransactionType.DEBIT, -1500, "Location", LocalDate.now());
+			Transaction transaction2 = new Transaction(TransactionType.DEBIT, -1500, "Location", LocalDateTime.now());
 			account1.addTransaction(transaction2);
 			transactionRepository.save(transaction2);
-			Transaction transaction3 = new Transaction(TransactionType.DEBIT, -540, "Debt", LocalDate.now());
+			Transaction transaction3 = new Transaction(TransactionType.DEBIT, -540, "Debt", LocalDateTime.now());
 			account2.addTransaction(transaction3);
 			transactionRepository.save(transaction3);
-			Transaction transaction4 = new Transaction(TransactionType.CREDIT, 1360, "Sales", LocalDate.now());
+			Transaction transaction4 = new Transaction(TransactionType.CREDIT, 1360, "Sales", LocalDateTime.now());
 			account2.addTransaction(transaction4);
 			transactionRepository.save(transaction4);
-			Transaction transaction5 = new Transaction(TransactionType.DEBIT, -4700, "Store", LocalDate.now());
+			Transaction transaction5 = new Transaction(TransactionType.DEBIT, -4700, "Store", LocalDateTime.now());
 			account2.addTransaction(transaction5);
 			transactionRepository.save(transaction5);
-			Transaction transaction6 = new Transaction(TransactionType.DEBIT, -1500, "Store", LocalDate.now());
+			Transaction transaction6 = new Transaction(TransactionType.DEBIT, -1500, "Store", LocalDateTime.now());
 			account3.addTransaction(transaction6);
 			transactionRepository.save(transaction6);
 
