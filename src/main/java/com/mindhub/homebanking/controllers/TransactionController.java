@@ -3,8 +3,8 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Transaction;
 import com.mindhub.homebanking.models.TransactionType;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.TransactionRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,10 @@ import java.time.LocalDateTime;
 public class TransactionController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransactionService transactionService;
 
     @Transactional
     @PostMapping("/transactions")
@@ -44,8 +44,8 @@ public class TransactionController {
             return new ResponseEntity<>("Error: Parameters cannot be empty", HttpStatus.FORBIDDEN);
         }
 
-        Account sourceAccount = accountRepository.findByNumber(fromAccountNumber);
-        Account targetAccount = accountRepository.findByNumber(toAccountNumber);
+        Account sourceAccount = accountService.findByNumber(fromAccountNumber);
+        Account targetAccount = accountService.findByNumber(toAccountNumber);
 
         if(sourceAccount == null) {
             return new ResponseEntity<>("Error: Source account does not exist.",HttpStatus.FORBIDDEN);
@@ -69,15 +69,15 @@ public class TransactionController {
 
         Transaction sourceTransaction = new Transaction(TransactionType.DEBIT, -amount, targetAccount.getNumber() +" | "+ description, LocalDateTime.now());
         Transaction targetTransaction = new Transaction(TransactionType.CREDIT, amount, sourceAccount.getNumber() +" | "+ description, LocalDateTime.now());
-        transactionRepository.save(sourceTransaction);
-        transactionRepository.save(targetTransaction);
+        transactionService.save(sourceTransaction);
+        transactionService.save(targetTransaction);
 
         sourceAccount.addTransaction(sourceTransaction);
         targetAccount.addTransaction(targetTransaction);
         sourceAccount.setBalance(sourceAccount.getBalance()-amount);
         targetAccount.setBalance((targetAccount.getBalance()+amount));
-        accountRepository.save(sourceAccount);
-        accountRepository.save(targetAccount);
+        accountService.save(sourceAccount);
+        accountService.save(targetAccount);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

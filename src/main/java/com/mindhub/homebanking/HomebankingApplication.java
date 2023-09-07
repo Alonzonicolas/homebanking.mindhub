@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -66,11 +65,11 @@ public class HomebankingApplication {
 			account3.addTransaction(transaction6);
 			transactionRepository.save(transaction6);
 
-			Loan loan1 = new Loan("Hipotecario", 500000, List.of(12, 24, 36, 48, 60));
+			Loan loan1 = new Loan("Mortgage", 500000, List.of(12, 24, 36, 48, 60));
 			loanRepository.save(loan1);
 			Loan loan2 = new Loan("Personal", 100000, List.of(6, 12, 24));
 			loanRepository.save(loan2);
-			Loan loan3 = new Loan("Automotriz", 300000, List.of(6, 12, 24, 36));
+			Loan loan3 = new Loan("Auto", 300000, List.of(6, 12, 24, 36));
 			loanRepository.save(loan3);
 
 			ClientLoan clientLoan1 = new ClientLoan(400000, loan1.getPayments().get(4));

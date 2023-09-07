@@ -29,7 +29,7 @@ public class AccountDTO {
 
     public String getNumber() { return number; }
 
-    public LocalDateTime getDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 

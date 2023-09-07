@@ -2,8 +2,8 @@ package com.mindhub.homebanking.controllers;
 
 import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.*;
-import com.mindhub.homebanking.repositories.CardRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.services.CardService;
+import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 public class CardController {
 
     @Autowired
-    private CardRepository cardRepository;
+    private CardService cardService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @GetMapping("/clients/current/cards")
     public ResponseEntity<Object> getCurrentClientCards(Authentication authentication) {
@@ -32,7 +32,7 @@ public class CardController {
             return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
         }
 
-        Client client = clientRepository.findByEmail(authentication.getName());
+        Client client = clientService.findByEmail(authentication.getName());
         Set<Card> clientCards = client.getCards();
 
         List<CardDTO> cardDTOS = clientCards
@@ -49,7 +49,15 @@ public class CardController {
             return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
         }
 
-        Client client = clientRepository.findByEmail((authentication.getName()));
+        if (cardColor != CardColor.GOLD && cardColor != CardColor.SILVER && cardColor != CardColor.TITANIUM) {
+            return new ResponseEntity<>("Card color must be GOLD, SILVER or TITANIUM", HttpStatus.FORBIDDEN);
+        }
+
+        if (cardType != CardType.CREDIT && cardType != CardType.DEBIT) {
+            return new ResponseEntity<>("Card type must be CREDIT or DEBIT", HttpStatus.FORBIDDEN);
+        }
+
+        Client client = clientService.findByEmail((authentication.getName()));
 
         boolean cardExists = client.getCards().stream()
                 .anyMatch(card -> card.getType() == cardType && card.getColor() == cardColor);
@@ -62,11 +70,12 @@ public class CardController {
 
         do {
             cardNumber = generateCardNumber(1000, 9999);
-        } while (cardRepository.existsByNumber(cardNumber));
+        } while (cardService.existsByNumber(cardNumber));
 
-        Card card = cardRepository.save(new Card(client.getFirstName()+" "+client.getLastName(), cardType, cardColor, cardNumber, getRandomNumber(100, 999), LocalDateTime.now().plusYears(5), LocalDateTime.now()));
+        Card card = new Card(client.getFirstName()+" "+client.getLastName(), cardType, cardColor, cardNumber, getRandomNumber(100, 999), LocalDateTime.now().plusYears(5), LocalDateTime.now());
+        cardService.save(card);
         client.addCard(card);
-        clientRepository.save(client);
+        clientService.save(client);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

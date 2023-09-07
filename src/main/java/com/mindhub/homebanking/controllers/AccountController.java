@@ -3,8 +3,8 @@ package com.mindhub.homebanking.controllers;
 import com.mindhub.homebanking.dtos.AccountDTO;
 import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
-import com.mindhub.homebanking.repositories.AccountRepository;
-import com.mindhub.homebanking.repositories.ClientRepository;
+import com.mindhub.homebanking.services.AccountService;
+import com.mindhub.homebanking.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +22,13 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private AccountService accountService;
     @Autowired
-    private ClientRepository clientRepository;
+    private ClientService clientService;
 
     @GetMapping("/accounts")
     public List<AccountDTO> getAccounts() {
-        List<Account> allAccounts = accountRepository.findAll();
-
-        List<AccountDTO> convertedList = allAccounts
-                .stream()
-                .map(AccountDTO::new)
-                .collect(Collectors.toList());
-
-        return convertedList;
+        return accountService.getAccounts();
     }
 
     @GetMapping("/accounts/{id}")
@@ -44,8 +37,8 @@ public class AccountController {
             return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
         }
 
-        Client client = clientRepository.findByEmail((authentication.getName()));
-        Account account = accountRepository.findById(id).orElse(null);
+        Client client = clientService.findByEmail((authentication.getName()));
+        Account account = accountService.findById(id);
         if (account == null){
             return new ResponseEntity<>("Account not found", HttpStatus.NOT_FOUND);
         }
@@ -65,7 +58,7 @@ public class AccountController {
             return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
         }
 
-        Client client = clientRepository.findByEmail(authentication.getName());
+        Client client = clientService.findByEmail(authentication.getName());
         Set<Account> clientAccounts = client.getAccounts();
 
         List<AccountDTO> accountDTOS = clientAccounts
@@ -82,7 +75,7 @@ public class AccountController {
             return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
         }
 
-        Client client = clientRepository.findByEmail((authentication.getName()));
+        Client client = clientService.findByEmail((authentication.getName()));
 
         if (client.getAccounts().size() >= 3) {
             return new ResponseEntity<>("You reached the maximum number of accounts allowed", HttpStatus.FORBIDDEN);
@@ -92,11 +85,12 @@ public class AccountController {
 
         do {
             accountNumber = generateAccountNumber();
-        } while (accountRepository.existsByNumber(accountNumber));
+        } while (accountService.existsByNumber(accountNumber));
 
-        Account account = accountRepository.save(new Account(accountNumber, LocalDateTime.now() , 0));
+        Account account = new Account(accountNumber, LocalDateTime.now() , 0);
+        accountService.save(account);
         client.addAccount(account);
-        clientRepository.save(client);
+        clientService.save(client);
         return new ResponseEntity<>("Account created", HttpStatus.CREATED);
     }
 
