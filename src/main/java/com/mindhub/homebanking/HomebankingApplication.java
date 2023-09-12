@@ -19,7 +19,7 @@ public class HomebankingApplication {
 		SpringApplication.run(HomebankingApplication.class, args);
 	}
 
-	@Autowired
+	/*@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Bean
@@ -102,5 +102,5 @@ public class HomebankingApplication {
 			client2.addCard(card3);
 			cardRepository.save(card3);
 		};
-	}
+	}*/
 }
