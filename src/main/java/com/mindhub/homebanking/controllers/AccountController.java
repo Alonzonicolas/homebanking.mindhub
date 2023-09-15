@@ -5,6 +5,7 @@ import com.mindhub.homebanking.models.Account;
 import com.mindhub.homebanking.models.Client;
 import com.mindhub.homebanking.services.AccountService;
 import com.mindhub.homebanking.services.ClientService;
+import com.mindhub.homebanking.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -84,7 +84,7 @@ public class AccountController {
         String accountNumber;
 
         do {
-            accountNumber = generateAccountNumber();
+            accountNumber = AccountUtils.generateAccountNumber();
         } while (accountService.existsByNumber(accountNumber));
 
         Account account = new Account(accountNumber, LocalDateTime.now() , 0);
@@ -94,9 +94,4 @@ public class AccountController {
         return new ResponseEntity<>("Account created", HttpStatus.CREATED);
     }
 
-    public String generateAccountNumber() {
-        Random random = new Random();
-        int randomNumber = random.nextInt(100000000);
-        return String.format("%08d", randomNumber);
-    }
 }

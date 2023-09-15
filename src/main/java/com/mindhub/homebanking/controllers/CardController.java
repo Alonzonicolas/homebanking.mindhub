@@ -4,6 +4,7 @@ import com.mindhub.homebanking.dtos.CardDTO;
 import com.mindhub.homebanking.models.*;
 import com.mindhub.homebanking.services.CardService;
 import com.mindhub.homebanking.services.ClientService;
+import com.mindhub.homebanking.utils.CardUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,22 +70,23 @@ public class CardController {
         String cardNumber;
 
         do {
-            cardNumber = generateCardNumber(1000, 9999);
+            cardNumber = CardUtils.getCardNumber();
         } while (cardService.existsByNumber(cardNumber));
 
-        Card card = new Card(client.getFirstName()+" "+client.getLastName(), cardType, cardColor, cardNumber, getRandomNumber(100, 999), LocalDateTime.now().plusYears(5), LocalDateTime.now());
+        Card card = new Card(client.getFirstName()+" "+client.getLastName(), cardType, cardColor, cardNumber, CardUtils.getCVV(), LocalDateTime.now().plusYears(5), LocalDateTime.now());
         cardService.save(card);
         client.addCard(card);
         clientService.save(client);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    public int getRandomNumber(int min, int max) {
+    /*public static int getRandomNumber(int min, int max) {
         Random random = new Random();
         return random.nextInt(max - min) + min;
     }
 
-    public String generateCardNumber(int min, int max){
+    public static String getCardNumber(int min, int max){
         return getRandomNumber(min, max)+"-"+getRandomNumber(min, max)+"-"+getRandomNumber(min, max)+"-"+getRandomNumber(min, max);
-    }
+    }*/
+
 }
